@@ -1,32 +1,97 @@
-//plugins {
-//    id 'java-library'
-//}
-//
-//java {
-//    sourceCompatibility = JavaVersion.VERSION_1_7
-//    targetCompatibility = JavaVersion.VERSION_1_7
-//}
-
 //插件
-apply plugin: 'groovy'
-apply plugin: 'maven'
+plugins {
+    id 'java'
+    id 'kotlin'
+    id 'groovy'
+    id 'scala'
+    id 'maven'
+    id 'maven-publish'
+}
+
+configurations {
+    deployerJars
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 //声明依赖
 dependencies {
+
+    // gradle插件依赖
     implementation gradleApi()
     implementation localGroovy()
+    // configuration声明
+    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2" // ssh依赖库
+    // scala插件依赖
+    implementation 'org.scala-lang:scala-library:2.11.12'
+    testImplementation 'org.scalatest:scalatest_2.11:3.0.0'
+    // junit依赖
+    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+
 }
 
 //maven配置
 uploadArchives{
     repositories.mavenDeployer {
-    //本地仓库路径，以放到项目根目录下的 repo 的文件夹为例
-    repository(url: uri('../repo'))
-    //groupId ，自行定义
-    pom.groupId = 'com.sensorsdata.myplugin'
-    //artifactId
-    pom.artifactId = 'MyPlugin'
-    //插件版本号
-    pom.version = '1.0.0'
+        //仓库路径
+        repository(url: uri('../repo'))//本地仓库路径
+        repository(url: repositoryUrl) {
+            // 用户校验 用户名/密码
+            authentication(userName: uname, password: pwd)
+        }
+
+        // 快照仓库地址（可选）
+        snapshotRepository(url: repositorySnapshotUrl) {
+            // 用户校验 用户名/密码
+            authentication(userName: uname, password: pwd)
+        }
+
+//        root
+//        releases
+//        snapshots
+//        proxy
+        configuration = configurations.deployerJars
+        pom.project {
+            name artifactName // artifact名称
+            version '1.0.0'//versionName // artifact版本
+            artifactId 'BuildPlugin'//_artifactId // artifact id
+            groupId 'xyz.miyastudio.gradle.plugin'//_groupId // artifact所属Group Id
+            packaging jar//packagingType // 文件格式，例如jar、aar
+            description "repo"//_description // 描述
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            credentials {
+                username 'username' // 仓库发布用户名
+                password 'password' // 仓库发布用户密码
+            }
+            url 'trunk_url' // 仓库地址
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId 'group_id' // groupId
+            artifactId 'artifact_id' // artifactId
+            version '1.0.0' // 发布版本
+            description 'This is a liberary to test v1.0.0' // 说明描述
+        }
     }
 }
