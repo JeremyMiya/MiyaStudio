@@ -22,16 +22,16 @@ class BuildPlugin implements Plugin<Project> {
                 }
         }
         // 功能2，对编译后的apk进行一些后处理操作
-        BuildExtension extension = project.getExtensions().create("resign", ResignPluginExtension.class)
+        BuildExtension extension2 = project.getExtensions().create("resign", ResignPluginExtension.class)
 
         project.android.applicationVariants.all { variant ->
             variant.assemble.doLast {
-                println("resign directory: " + extension.signDirectory)
-                if (extension.signDirectory == null) {
+                println("resign directory: " + extension2.signDirectory)
+                if (extension2.signDirectory == null) {
                     return
                 }
 
-                final File signDirectory = new File(extension.signDirectory)
+                final File signDirectory = new File(extension2.signDirectory)
                 if (!signDirectory.exists()) {
                     return
                 }

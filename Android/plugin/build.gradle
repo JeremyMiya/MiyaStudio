@@ -28,10 +28,10 @@ dependencies {
     implementation gradleApi()
     implementation localGroovy()
     // configuration声明
-    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2" // ssh依赖库
+    deployerJars 'org.apache.maven.wagon:wagon-ssh:3.4.1' // ssh依赖库
     // scala插件依赖
-    implementation 'org.scala-lang:scala-library:2.11.12'
-    testImplementation 'org.scalatest:scalatest_2.11:3.0.0'
+    implementation 'org.scala-lang:scala-library:2.13.3'
+    testImplementation 'org.scalatest:scalatest_2.11:3.2.2'
     // junit依赖
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 
@@ -42,24 +42,25 @@ uploadArchives{
     repositories.mavenDeployer {
         //仓库路径
         repository(url: uri('../repo'))//本地仓库路径
-        repository(url: repositoryUrl) {
-            // 用户校验 用户名/密码
-            authentication(userName: uname, password: pwd)
-        }
-
-        // 快照仓库地址（可选）
-        snapshotRepository(url: repositorySnapshotUrl) {
-            // 用户校验 用户名/密码
-            authentication(userName: uname, password: pwd)
-        }
+//        repository(url: repositoryUrl) {
+//            // 用户校验 用户名/密码
+//            authentication(userName: uname, password: pwd)
+//        }
+//
+//        // 快照仓库地址（可选）
+//        snapshotRepository(url: repositorySnapshotUrl) {
+//            // 用户校验 用户名/密码
+//            authentication(userName: uname, password: pwd)
+//        }
 
 //        root
 //        releases
 //        snapshots
 //        proxy
         configuration = configurations.deployerJars
+
         pom.project {
-            name artifactName // artifact名称
+            name "BuildPlugin" // artifact名称
             version '1.0.0'//versionName // artifact版本
             artifactId 'BuildPlugin'//_artifactId // artifact id
             groupId 'xyz.miyastudio.gradle.plugin'//_groupId // artifact所属Group Id
