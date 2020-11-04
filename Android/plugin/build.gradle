@@ -1,0 +1,32 @@
+//plugins {
+//    id 'java-library'
+//}
+//
+//java {
+//    sourceCompatibility = JavaVersion.VERSION_1_7
+//    targetCompatibility = JavaVersion.VERSION_1_7
+//}
+
+//插件
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+//声明依赖
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+//maven配置
+uploadArchives{
+    repositories.mavenDeployer {
+    //本地仓库路径，以放到项目根目录下的 repo 的文件夹为例
+    repository(url: uri('../repo'))
+    //groupId ，自行定义
+    pom.groupId = 'com.sensorsdata.myplugin'
+    //artifactId
+    pom.artifactId = 'MyPlugin'
+    //插件版本号
+    pom.version = '1.0.0'
+    }
+}
